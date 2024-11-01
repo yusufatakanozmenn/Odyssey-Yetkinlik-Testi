@@ -1,68 +1,67 @@
-# CodeIgniter 4 Application Starter
+# Webinars API
 
-## What is CodeIgniter?
+Bu proje, CodeIgniter kullanarak basit bir RESTful API geliştirme örneğidir. API, bir MySQL veritabanındaki `webinars` tablosundan verileri JSON formatında döndürmektedir.
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+## Özellikler
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+- API anahtarı ile erişim kontrolü.
+- `status` parametresi ile aktif (1) veya pasif (0) webinarları filtreleme.
+- Hata yönetimi ile kullanıcı dostu hata mesajları.
+- URL ve JSON body üzerinden istek kabul etme.
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+## Gereksinimler
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+- PHP 7.2 veya üzeri
+- CodeIgniter 4
+- MySQL
 
-## Installation & updates
+## Kurulum
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+1. **Veritabanı Ayarları**
+   - MySQL veritabanında `webinars` isimli bir tablo oluşturun. Tablo, aşağıdaki sütunları içermelidir:
+     - `id` (int, auto_increment, primary key)
+     - `title` (varchar)
+     - `description` (text)
+     - `date` (datetime)
+     - `status` (tinyint)
+     - `created_at` (timestamp)
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+   - Örnek SQL sorgusu:
+     ```sql
+     CREATE TABLE webinars (
+         id INT AUTO_INCREMENT PRIMARY KEY,
+         title VARCHAR(255) NOT NULL,
+         description TEXT,
+         date DATETIME NOT NULL,
+         status TINYINT(1) NOT NULL,
+         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+     );
 
-## Setup
+     INSERT INTO webinars (title, description, date, status) VALUES 
+     ('Webinar 1', 'Description for Webinar 1', '2024-11-01 10:00:00', 1),
+     ('Webinar 2', 'Description for Webinar 2', '2024-11-02 11:00:00', 0);
+     ```
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+2. **API Anahtarını Ayarlama**
+   - Projeye `.env` dosyası ekleyin ve aşağıdaki satırı ekleyin:
+     ```plaintext
+     API_KEY=my_secret_api_key
+     ```
 
-## Important Change with index.php
+3. **Proje Yapılandırması**
+   - Gerekli bağımlılıkları yükleyin:
+     ```bash
+     composer install
+     ```
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+4. **API'yi Çalıştırma**
+   - Web sunucunuzu başlatın (örneğin, Apache veya Nginx) ve projenize gidin.
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+## Kullanım
 
-**Please** read the user guide for a better explanation of how CI4 works!
+API'ye istek göndermek için aşağıdaki örnekleri kullanabilirsiniz:
 
-## Repository Management
+- **GET İsteği (URL üzerinden)**:
+http://localhost/odyssey/public/webinars?api_key=my_api_key&status=1
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
-
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
-
-## Server Requirements
-
-PHP version 8.1 or higher is required, with the following extensions installed:
-
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
-
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - If you are still using PHP 7.4 or 8.0, you should upgrade immediately.
-> - The end of life date for PHP 8.1 will be December 31, 2025.
-
-Additionally, make sure that the following extensions are enabled in your PHP:
-
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+http://localhost/odyssey/public/webinars?api_key=my_api_key&status=0
